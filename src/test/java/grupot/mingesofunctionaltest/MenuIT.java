@@ -15,20 +15,40 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import testlink.api.java.client.TestLinkAPIClient;
+import testlink.api.java.client.TestLinkAPIException;
+import testlink.api.java.client.TestLinkAPIResults;
+
+
 
 /**
  *
  * @author RaulMaster
  */
 public class MenuIT {
-    
+    //Web driver de selenium
     private static WebDriver driver = null;
+    //Api del testlink
+    public static String DEV_KEY = "9cc3a810b19e2d7436a0b7b60f9bd9a2"; //Your API
+    //@Key 
+    //public static String SERVER_URL = "http://localhost/testlink/index.php"; //your testlink server url
+    public static String SERVER_URL = "http://localhost/testlink/lib/api/xmlrpc/v1/xmlrpc.php";
+    public static String PROJECT_NAME = "Mingeso Test"; 
+    public static String PLAN_NAME = "Plan de prueba Menu Create";
+    public static String BUILD_NAME = "V 1.0";
+    public static String Case_Name = "Registrar un nuevo menu de forma valida [1]"; 
+ 
     //nombre elemento para realizar la prueba
-    private static String nombrePlato = "mani confitado";
+    private static String nombrePlato = "Mani Salado";
+      
+    public static void reportResult(String TestProject,String TestPlan,String Testcase,String Build,String Notes,String Result) throws TestLinkAPIException{
+	TestLinkAPIClient api=new TestLinkAPIClient(DEV_KEY, SERVER_URL);
+	api.reportTestCaseResult(TestProject, TestPlan, Testcase, Build, Notes, Result);
+    }
+    
     
     public MenuIT() {
     }
-
     
     @BeforeClass
     public static void InicializarDriver(){
@@ -44,47 +64,60 @@ public class MenuIT {
     }
     
     @Test
-    public void CrearNuevoMenu(){
-        driver.get("http://localhost:8080/Mingeso/faces/app/menu/index.xhtml");
+    public void CrearNuevoMenu() throws TestLinkAPIException{
+	String notes=null;
+	String result=null;
         
-        //find Element busca el boton crear a partir de su nobmre
-        WebElement botonCrear = driver.findElement(By.name("MenuListForm:createButton")) ;
-        //hacemos click en el boton
-        botonCrear.click();
-        
-        //esperamos maximo 10 segundos
-        WebDriverWait espera = new WebDriverWait(driver, 5);
-        //buscamos el dialogo creado para ingresar nuevo menu
-        WebElement TablaCrearMenu = driver.findElement(By.id("MenuCreateDlg_title"));
-        //paramos de esperar si es q la tabla ya es visible
-        espera.until(ExpectedConditions.visibilityOf(TablaCrearMenu));
-        
-        //escribimos elementos
-        WebElement ingresarNombre = driver.findElement(By.id("MenuCreateForm:nombreMenu"));
-        ingresarNombre.sendKeys(nombrePlato);
-        WebElement ingresarPrecio = driver.findElement(By.id("MenuCreateForm:precioMenu"));
-        ingresarPrecio.sendKeys("3500");
-        WebElement ingresarCantidad = driver.findElement(By.id("MenuCreateForm:cantDisponible"));
-        ingresarCantidad.sendKeys("100");
-        WebElement ingresarTiempo = driver.findElement(By.id("MenuCreateForm:tiempoPreparacion"));
-        ingresarTiempo.sendKeys("2");
-                
-        //accionamos el boton aceptar        
-        WebElement aceptarBoton = driver.findElement(By.id("MenuCreateForm:j_idt93"));
-        aceptarBoton.click();
-        //accionamos boton OK
-        WebElement confirmarBoton = driver.findElement(By.id("MenuListForm:j_idt51"));
-        confirmarBoton.click();        
-       
-        
-        
+        try{
+            driver.get("http://localhost:8080/Mingeso/faces/app/menu/index.xhtml");
+            //find Element busca el boton crear a partir de su nobmre
+            WebElement botonCrear = driver.findElement(By.name("MenuListForm:createButton")) ;
+            //hacemos click en el boton
+            botonCrear.click();
+
+            //esperamos maximo 10 segundos
+            WebDriverWait espera = new WebDriverWait(driver, 5);
+            //buscamos el dialogo creado para ingresar nuevo menu
+            WebElement TablaCrearMenu = driver.findElement(By.id("MenuCreateDlg_title"));
+            //paramos de esperar si es q la tabla ya es visible
+            espera.until(ExpectedConditions.visibilityOf(TablaCrearMenu));
+
+            //escribimos elementos
+            WebElement ingresarNombre = driver.findElement(By.id("MenuCreateForm:nombreMenu"));
+            ingresarNombre.sendKeys(nombrePlato);
+            WebElement ingresarPrecio = driver.findElement(By.id("MenuCreateForm:precioMenu"));
+            ingresarPrecio.sendKeys("3500");
+            WebElement ingresarCantidad = driver.findElement(By.id("MenuCreateForm:cantDisponible"));
+            ingresarCantidad.sendKeys("100");
+            WebElement ingresarTiempo = driver.findElement(By.id("MenuCreateForm:tiempoPreparacion"));
+            ingresarTiempo.sendKeys("2");
+
+            //accionamos el boton aceptar        
+            WebElement aceptarBoton = driver.findElement(By.id("MenuCreateForm:j_idt93"));
+            aceptarBoton.click();
+            //accionamos boton OK
+            WebElement confirmarBoton = driver.findElement(By.id("MenuListForm:j_idt51"));
+            confirmarBoton.click();       
+            
+            //Enviamos respuesta al testlink
+    	result= TestLinkAPIResults.TEST_PASSED;
+	notes="Executed successfully";
+	}
+
+	catch(Exception e){
+	result=TestLinkAPIResults.TEST_FAILED;
+	notes="Execution failed";
+
+	}
+	finally{
+	reportResult(PROJECT_NAME, PLAN_NAME, Case_Name , BUILD_NAME, notes, result);
+	driver.quit();
+
+	}
     }
     
-    @Test
-    public void ComprobarPrecioReal() {
-        
-                
-    }
+
+    
     
     /*
     //INGRESO PRECIO AL MENU EN EL CREATE-MENU
