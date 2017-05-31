@@ -8,7 +8,6 @@ package grupot.mingesofunctionaltest;
 import org.junit.BeforeClass;
 import org.junit.AfterClass;
 import org.junit.Test;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -61,7 +60,7 @@ public class Logeo {
     @Test
     public void Logearse() throws TestLinkAPIException{
 	String notes="Execution failed: ";
-	String result=TestLinkAPIResults.TEST_FAILED;;
+	String result=TestLinkAPIResults.TEST_FAILED;
   
         try{
             //nos dirigimos al login
