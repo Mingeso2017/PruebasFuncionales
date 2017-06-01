@@ -6,6 +6,8 @@ import org.junit.BeforeClass;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import static org.openqa.selenium.Keys.TAB;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -89,7 +91,7 @@ public class Menu {
           
             //Ahora ingresamos los valores al menu
             //ingresamos una fecha en el calendario
-                WebElement calendario = driver.findElement(By.id("j_idt6:j_idt11_input"));
+                WebElement calendario = driver.findElement(By.id("j_idt6:datetime_input"));
                 calendario.click();
                 //navegamos por el calendario hasta la fecha 28
                 List<WebElement> allDates=driver.findElements(By.xpath("//table[@class='ui-datepicker-calendar']//td"));
@@ -106,20 +108,30 @@ public class Menu {
 			
 		}
             
+            //press tab
+            calendario.click();
+            calendario.sendKeys(Keys.TAB);
+            
             //comida
-      
-                
-                WebElement ingresarMonto = driver.findElement(By.id("j_idt6:j_idt19"));
+            WebElement selectPlato = driver.findElement(By.id("j_idt6:j_idt12_label"));
+            selectPlato.sendKeys(Keys.TAB);
+            
+            //edificio
+            WebElement selectUbicacion = driver.findElement(By.id("j_idt6:j_idt15_label"));
+            selectUbicacion.sendKeys(Keys.TAB);               
+            
+            
+                WebElement ingresarMonto = driver.findElement(By.id("j_idt6:j_idt18"));
                 ingresarMonto.clear();
                 ingresarMonto.sendKeys(monto);
             
             //click en ordenar comida
-            WebElement botonOrdenar = driver.findElement(By.id("j_idt6:j_idt25"));
+            WebElement botonOrdenar = driver.findElement(By.id("j_idt6:j_idt24"));
             botonOrdenar.click();
 
             driver.switchTo().defaultContent();
             //esperar segundos para 
-            WebDriverWait espera2 = new WebDriverWait(driver, 1000);
+            WebDriverWait espera2 = new WebDriverWait(driver, 2000);
             WebElement mensaje = driver.findElement(By.xpath("//span[@class='ui-messages-info-detail']"));
             espera2.until(ExpectedConditions.visibilityOf(mensaje));
             //<span class="ui-messages-info-detail">
